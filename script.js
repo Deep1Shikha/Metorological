@@ -39,12 +39,14 @@ function setPosition(position){
 function showError(error){
     notificationElement.style.display = "block";
     notificationElement.innerHTML = `<p> ${error.message} </p>`
+    displayDefaultWeather();
 }
 
 //Get weather from API provider
 function getWeather(latitude, longitude){
     let api=`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}`;
-    
+    console.log(api);    
+
     fetch(api)
         .then(function(response){
             let data = response.json();
@@ -52,10 +54,12 @@ function getWeather(latitude, longitude){
         })
         .then(function(data){
             weather.temperature.value = Math.floor(data.main.temp - KELVIN);
-            weather.description = data.weather[0].icon;
+            weather.description = data.weather[0].description;
             weather.iconId = data.weather[0].icon;
             weather.city = data.name;
             weather.country = data.sys.country;
+
+            console.log(weather.description);
         })
         .then(function(){
             displayWeather();
@@ -68,4 +72,11 @@ function displayWeather(){
     tempElement.innerHTML = `${weather.temperature.value}*<span>C</span>`;
     descElement.innerHTML = weather.description;
     locationElement.innerHTML = `${weather.city}, ${weather.country}`;
+}
+
+function displayDefaultWeather(){
+    iconElement.innerHTML = `<img src="icons/50n.png">`;  
+    tempElement.innerHTML = `25*<span>C</span>`;
+    descElement.innerHTML = "mist";
+    locationElement.innerHTML = "Daltonganj, IN";
 }
